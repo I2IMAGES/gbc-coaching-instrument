@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gap · Bottleneck · Cliff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0a0f1e;
+    --navy-2: #0d1424;
+    --navy-3: #111827;
+    --blue:   #3B82F6;
+    --indigo: #6366F1;
+    --s1:     #f1f5f9;
+    --s2:     #94a3b8;
+    --s3:     #475569;
+    --s4:     #1e293b;
+    --border: #1e3a5f;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--navy);
+    color: var(--s1);
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 48px;
+  }
+
+  .q-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+  }
+
+  .q-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--s1);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .q-rule {
+    width: 48px;
+    height: 3px;
+    background: var(--blue);
+    margin: 16px 0 20px;
+  }
+
+  .q-text {
+    font-size: 17px;
+    color: var(--s1);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+
+  .q-hint {
+    font-size: 13px;
+    color: var(--s3);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 160px;
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--s1);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    padding: 16px 18px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 24px;
+  }
+
+  textarea:focus { border-color: var(--blue); }
+  textarea::placeholder { color: var(--s3); }
+
+  .btn-next {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #1d4ed8, var(--blue));
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 13px 32px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-next:hover { opacity: 0.88; }
+
+  .btn-skip {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--s3);
+    cursor: pointer;
+    margin-left: 16px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-skip:hover { color: var(--s2); }
+
+  .btn-commit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--indigo), var(--blue));
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 36px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    display: none;
+  }
+
+  .btn-commit.visible { display: inline-block; }
+  .btn-commit:hover { opacity: 0.88; }
+
+  .confirm-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--indigo), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  .confirm-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--s1);
+    margin-bottom: 12px;
+  }
+
+  .confirm-body {
+    font-size: 15px;
+    color: var(--s2);
+    line-height: 1.65;
+    margin-bottom: 32px;
+    max-width: 460px;
+  }
+
+  .commitment-display {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 6px 6px 0;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--s1);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .commitment-ts {
+    font-size: 11px;
+    color: var(--s3);
+    margin-top: 8px;
+    font-style: normal;
+  }
+
+  .btn-calendly {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #1d4ed8, var(--blue));
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    padding: 13px 32px;
+  }
+
+  .saved-note {
+    font-size: 12px;
+    color: var(--s3);
+    margin-top: 16px;
+  }
+
+  .error-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--s1);
+    margin-bottom: 12px;
+  }
+
+  .error-body {
+    font-size: 14px;
+    color: var(--s2);
+    line-height: 1.65;
+  }
+
+  @media (max-width: 480px) {
+    .q-heading { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Inward2Onward · Coaching Instrument</div>
+
+  <!-- Q1: THE GAP -->
+  <div class="screen" id="screen-q1">
+    <div class="q-eyebrow">Question one</div>
+    <div class="q-heading">The Gap</div>
+    <div class="q-rule"></div>
+    <div class="q-text">If everything stayed exactly as it is today for another 90 days, what would be missing that makes your goal impossible?</div>
+    <div class="q-hint">Write without editing yourself. There are no wrong answers here.</div>
+    <textarea id="ans-q1" placeholder="What is missing..."></textarea>
+    <div>
+      <button class="btn-next" onclick="goQ2()">Continue</button>
+      <button class="btn-skip" onclick="goQ2()">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- Q2: THE BOTTLENECK -->
+  <div class="screen" id="screen-q2">
+    <div class="q-eyebrow">Question two</div>
+    <div class="q-heading">The Bottleneck</div>
+    <div class="q-rule"></div>
+    <div class="q-text">Of everything you just named, which one — if it were solved tomorrow — would make the most other things easier or unnecessary?</div>
+    <div class="q-hint">There is usually one. It tends to be the thing you have been avoiding naming.</div>
+    <textarea id="ans-q2" placeholder="The one thing that would unlock everything else..."></textarea>
+    <div>
+      <button class="btn-next" onclick="goQ3()">Continue</button>
+      <button class="btn-skip" onclick="goQ3()">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- Q3: THE CLIFF -->
+  <div class="screen" id="screen-q3">
+    <div class="q-eyebrow">Question three</div>
+    <div class="q-heading">The Cliff</div>
+    <div class="q-rule"></div>
+    <div class="q-text">Which of the choices in front of you, if you made it today and it turned out to be wrong, would cost you something you cannot recover?</div>
+    <div class="q-hint">This is not about fear. It is about knowing which decisions are experiments and which ones are commitments.</div>
+    <textarea id="ans-q3" placeholder="The choice I cannot take back..."></textarea>
+    <div>
+      <button class="btn-next" onclick="goCommit()">Continue</button>
+      <button class="btn-skip" onclick="goCommit()">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- COMMIT -->
+  <div class="screen" id="screen-commit">
+    <div class="q-eyebrow">Your commitment</div>
+    <div class="q-heading">The Direction</div>
+    <div class="q-rule"></div>
+    <div class="q-text">Name the direction you are choosing. Not the perfect answer. The one that is true right now.</div>
+    <div class="q-hint">You can change your mind. But naming it — even provisionally — is the work.</div>
+    <textarea id="ans-commit" placeholder="I am choosing to..."></textarea>
+    <button class="btn-commit" id="btn-commit" onclick="doCommit()">I commit to this.</button>
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div class="screen" id="screen-confirm">
+    <div class="confirm-icon">&#x2713;</div>
+    <div class="confirm-heading">Committed.</div>
+    <div class="confirm-body">Your direction is recorded. This is yours — no one else can see what you wrote. When you are ready to talk it through, your next session is one click away.</div>
+    <div class="commitment-display" id="commitment-display"></div>
+    <a class="btn-calendly" href="https://calendly.com/ej--33/ai-powered-workflows-automation" target="_blank" rel="noopener">Book your follow-up session</a>
+    <div class="saved-note">Your responses are saved in this browser. They will be here when you return.</div>
+  </div>
+
+  <!-- INVALID CODE -->
+  <div class="screen" id="screen-invalid">
+    <div class="error-heading">This link does not look right.</div>
+    <div class="error-body">If you received this from EJ Steele, check that you copied the full URL. If you need a new link, reach out at <a href="mailto:ej@inward2onward.com" style="color:var(--blue);">ej@inward2onward.com</a> or 623.272.8066.</div>
+  </div>
+
+</div>
+
+<script>
+const WORKER = '/api';
+const STORAGE_KEY = 'gbc_session';
+
+let sessionCode = null;
+
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+
+  if (!code || !/^GBC-\d{4}-\d{2}$/.test(code)) {
+    show('screen-invalid');
+    return;
+  }
+
+  sessionCode = code.toUpperCase();
+
+  const saved = getSaved();
+
+  // Restore typed answers
+  if (saved.q1) document.getElementById('ans-q1').value = saved.q1;
+  if (saved.q2) document.getElementById('ans-q2').value = saved.q2;
+  if (saved.q3) document.getElementById('ans-q3').value = saved.q3;
+  if (saved.commit) document.getElementById('ans-commit').value = saved.commit;
+
+  // If already committed, go straight to confirmation
+  if (saved.committed && saved.commitment) {
+    showConfirmation(saved.commitment, saved.committed_at);
+    return;
+  }
+
+  ['ans-q1', 'ans-q2', 'ans-q3', 'ans-commit'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      autoSave();
+      if (id === 'ans-commit') toggleCommitBtn();
+    });
+  });
+
+  show('screen-q1');
+  logTouch('T1_opened');
+})();
+
+function goQ2() {
+  autoSave();
+  show('screen-q2');
+  logTouch('T2_opened');
+}
+
+function goQ3() {
+  autoSave();
+  show('screen-q3');
+  logTouch('T3_opened');
+}
+
+function goCommit() {
+  autoSave();
+  show('screen-commit');
+  toggleCommitBtn();
+}
+
+function toggleCommitBtn() {
+  const val = document.getElementById('ans-commit').value.trim();
+  const btn = document.getElementById('btn-commit');
+  btn.classList.toggle('visible', val.length > 10);
+}
+
+function doCommit() {
+  const commitment = document.getElementById('ans-commit').value.trim();
+  if (!commitment) return;
+
+  const ts = new Date().toISOString();
+  const saved = getSaved();
+  saved.commitment = commitment;
+  saved.committed = true;
+  saved.committed_at = ts;
+  setSaved(saved);
+
+  logTouch('T3_committed', true);
+  showConfirmation(commitment, ts);
+}
+
+function showConfirmation(commitment, ts) {
+  const display = document.getElementById('commitment-display');
+  const date = new Date(ts).toLocaleString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
+    hour: 'numeric', minute: '2-digit',
+  });
+  display.innerHTML = `"${escHtml(commitment)}"<div class="commitment-ts">Committed ${date}</div>`;
+  show('screen-confirm');
+}
+
+function getSaved() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function setSaved(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  catch {}
+}
+
+function autoSave() {
+  const saved = getSaved();
+  saved.q1     = document.getElementById('ans-q1').value;
+  saved.q2     = document.getElementById('ans-q2').value;
+  saved.q3     = document.getElementById('ans-q3').value;
+  saved.commit = document.getElementById('ans-commit').value;
+  setSaved(saved);
+}
+
+function logTouch(touchpoint, committed = false) {
+  if (!sessionCode) return;
+  fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'log_touch', session_code: sessionCode, touchpoint, committed }),
+  }).catch(() => {});
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

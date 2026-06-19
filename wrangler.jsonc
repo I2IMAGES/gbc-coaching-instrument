@@ -1,0 +1,12 @@
+{
+  "name": "gbc-coaching-instrument",
+  "pages_build_output_dir": ".",
+  "compatibility_date": "2026-06-01"
+}
+
+// Secrets — set via Cloudflare dashboard or wrangler CLI before deploying:
+//   npx wrangler pages secret put SUPABASE_URL
+//   npx wrangler pages secret put SUPABASE_ANON_KEY
+//   npx wrangler pages secret put ADMIN_PASSWORD
+//
+// Never commit secret values to this file or any file in the repo.

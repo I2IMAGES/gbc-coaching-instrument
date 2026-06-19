@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GBC Admin · Inward2Onward</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0a0f1e;
+    --navy-2: #0d1424;
+    --blue:   #3B82F6;
+    --indigo: #6366F1;
+    --s1:     #f1f5f9;
+    --s2:     #94a3b8;
+    --s3:     #475569;
+    --s4:     #1e293b;
+    --border: #1e3a5f;
+    --green:  #10b981;
+    --red:    #ef4444;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--s1);
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+
+  .logo-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--s1);
+  }
+
+  .header-note { font-size: 12px; color: var(--s3); }
+
+  .login-wrap {
+    max-width: 360px;
+    margin: 80px auto 0;
+    text-align: center;
+  }
+
+  .login-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--s1);
+    margin-bottom: 24px;
+  }
+
+  input[type="password"] {
+    width: 100%;
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--s1);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  input[type="password"]:focus { border-color: var(--blue); }
+
+  .btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #1d4ed8, var(--blue));
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 11px 24px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+  }
+
+  .btn:hover { opacity: 0.88; }
+
+  .btn-generate {
+    width: auto;
+    font-size: 15px;
+    padding: 12px 28px;
+  }
+
+  .gen-block {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .gen-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--s1);
+    margin-bottom: 4px;
+  }
+
+  .gen-sub { font-size: 12px; color: var(--s3); }
+
+  .gen-result {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .gen-result.visible { display: flex; }
+
+  .code-pill {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blue);
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    letter-spacing: 0.1em;
+  }
+
+  .btn-copy {
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--s2);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-copy:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-copy.copied { border-color: var(--green); color: var(--green); }
+
+  .gen-url {
+    font-size: 11px;
+    color: var(--s3);
+    margin-top: 8px;
+    word-break: break-all;
+  }
+
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  .btn-refresh {
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--s3);
+    border-radius: 4px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+
+  .btn-refresh:hover { color: var(--s2); border-color: var(--s3); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  th {
+    text-align: left;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--s3);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--s2);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--navy-2); }
+
+  .code-cell {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.08em;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--s4);
+  }
+
+  .dot.yes { background: var(--green); }
+  .dot.committed { background: var(--indigo); }
+
+  .ts { font-size: 11px; color: var(--s3); }
+
+  .empty-state {
+    padding: 40px 0;
+    text-align: center;
+    color: var(--s3);
+    font-size: 14px;
+  }
+
+  .error-msg { font-size: 13px; color: var(--red); margin-top: 8px; }
+
+  @media (max-width: 600px) {
+    .gen-block { flex-direction: column; align-items: flex-start; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div>
+      <div class="logo-eyebrow">Inward2Onward LLC</div>
+      <div class="logo-name">GBC Admin</div>
+    </div>
+    <div class="header-note" id="admin-user" style="display:none;">
+      Signed in as EJ &middot; <a href="#" onclick="signOut()" style="color:var(--s3);">Sign out</a>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-wrap">
+      <div class="login-heading">Admin access</div>
+      <input type="password" id="pw-input" placeholder="Enter admin password"
+             onkeydown="if(event.key==='Enter')signIn()" autocomplete="current-password" />
+      <div class="error-msg" id="login-error" style="display:none;">Incorrect password.</div>
+      <br /><br />
+      <button class="btn" onclick="signIn()">Sign in</button>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="admin-screen" style="display:none;">
+
+    <div class="gen-block">
+      <div>
+        <div class="gen-label">New client session</div>
+        <div class="gen-sub">One click generates a session code and copies the client URL.</div>
+        <div class="gen-result" id="gen-result">
+          <div class="code-pill" id="gen-code"></div>
+          <button class="btn-copy" id="btn-copy" onclick="copyUrl()">Copy link</button>
+        </div>
+        <div class="gen-url" id="gen-url"></div>
+      </div>
+      <button class="btn btn-generate" onclick="generateCode()">Generate code</button>
+    </div>
+
+    <div>
+      <div class="dash-header">
+        <div class="section-label">Session activity</div>
+        <button class="btn-refresh" onclick="loadDashboard()">Refresh</button>
+      </div>
+      <div id="dash-wrap">
+        <div class="empty-state">Loading...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const WORKER = '/api';
+const CLIENT_BASE = 'https://gbc.inward2onward.com';
+
+let adminPw = null;
+let lastGeneratedCode = null;
+
+function signIn() {
+  const pw = document.getElementById('pw-input').value.trim();
+  if (!pw) return;
+  adminPw = pw;
+  verifyAndLoad();
+}
+
+function signOut() {
+  adminPw = null;
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'block';
+  document.getElementById('admin-user').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+}
+
+async function verifyAndLoad() {
+  const res = await workerPost({ action: 'get_dashboard', admin_password: adminPw });
+  if (!res.ok) {
+    document.getElementById('login-error').style.display = 'block';
+    adminPw = null;
+    return;
+  }
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-screen').style.display = 'block';
+  document.getElementById('admin-user').style.display = 'block';
+  const data = await res.json();
+  renderDashboard(data.rows || []);
+}
+
+async function generateCode() {
+  const res = await workerPost({ action: 'generate_code', admin_password: adminPw });
+  if (!res.ok) { alert('Failed to generate code. Check your connection.'); return; }
+  const data = await res.json();
+  const code = data.session_code;
+  lastGeneratedCode = code;
+
+  document.getElementById('gen-code').textContent = code;
+  document.getElementById('gen-url').textContent = `${CLIENT_BASE}?code=${code}`;
+  document.getElementById('gen-result').classList.add('visible');
+
+  copyUrl();
+  loadDashboard();
+}
+
+function copyUrl() {
+  if (!lastGeneratedCode) return;
+  const url = `${CLIENT_BASE}?code=${lastGeneratedCode}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy link';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+async function loadDashboard() {
+  const res = await workerPost({ action: 'get_dashboard', admin_password: adminPw });
+  if (!res.ok) return;
+  const data = await res.json();
+  renderDashboard(data.rows || []);
+}
+
+function renderDashboard(rows) {
+  const wrap = document.getElementById('dash-wrap');
+  if (!rows.length) {
+    wrap.innerHTML = '<div class="empty-state">No sessions yet. Generate a code to get started.</div>';
+    return;
+  }
+
+  const fmt = ts => ts ? new Date(ts).toLocaleString('en-US', {
+    month: 'short', day: 'numeric',
+    hour: 'numeric', minute: '2-digit',
+  }) : '—';
+
+  const dot = (val, cls) =>
+    `<span class="dot ${val ? cls : ''}" title="${val ? fmt(val) : 'Not yet'}"></span>`;
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Created</th>
+          <th title="T1 opened">T1</th>
+          <th title="T2 opened">T2</th>
+          <th title="T3 opened">T3</th>
+          <th title="Committed">&#x2713;</th>
+          <th>Last touch</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => `
+          <tr>
+            <td class="code-cell">${escHtml(r.session_code)}</td>
+            <td class="ts">${fmt(r.created_at)}</td>
+            <td>${dot(r.T1_opened, 'yes')}</td>
+            <td>${dot(r.T2_opened, 'yes')}</td>
+            <td>${dot(r.T3_opened, 'yes')}</td>
+            <td>${dot(r.T3_committed, 'committed')}</td>
+            <td class="ts">${fmt(r.last_touch)}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+function workerPost(body) {
+  return fetch(WORKER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
