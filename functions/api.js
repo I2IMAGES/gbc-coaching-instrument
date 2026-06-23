@@ -43,6 +43,12 @@ export async function onRequestPost(context) {
       return json({ error: 'DB insert failed', detail: result.error }, 500, cors);
     }
 
+    if (touchpoint === 'T3_committed') {
+      await sendSms(env,
+        `GBC: ${session_code.trim().toUpperCase()} committed. ${new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Phoenix' })} AZ`
+      );
+    }
+
     return json({ success: true }, 200, cors);
   }
 
@@ -183,6 +189,24 @@ async function supabaseInsert(env, table, data) {
     return { error: err };
   }
   return { error: null };
+}
+
+async function sendSms(env, message) {
+  if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN) return;
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`;
+  const creds = btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`);
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${creds}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      From: env.TWILIO_FROM,
+      To: env.TWILIO_TO,
+      Body: message,
+    }),
+  }).catch(() => {});
 }
 
 async function supabaseSelect(env, table, cols, query = '') {
